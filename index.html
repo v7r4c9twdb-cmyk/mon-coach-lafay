@@ -1,35 +1,192 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#183b32"><title>Mon Coach Lafay</title><link rel="manifest" href="manifest.webmanifest"><style>
-*{box-sizing:border-box}body{margin:0;background:#f4f6f1;color:#17231d;font:16px system-ui}header{background:#183b32;color:white;padding:25px 20px;border-radius:0 0 22px 22px}main{max-width:850px;margin:auto;padding:16px}h1{margin:5px 0}h2{font-size:19px}.card{background:white;border:1px solid #e1e8df;border-radius:17px;padding:17px;margin:14px 0}.muted{color:#68756e;font-size:14px}.grid,.week{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.stat,.day{background:#f0f5eb;padding:13px;border-radius:12px}.stat b{display:block;font-size:22px;color:#183b32}label{display:block;font-weight:650;margin:12px 0 6px}input,textarea{width:100%;padding:11px;border:1px solid #cbd6cb;border-radius:10px;font:inherit}textarea{min-height:100px}button{padding:12px 15px;border:0;border-radius:11px;background:#183b32;color:white;font-weight:700;margin:8px 6px 0 0}button.alt{background:#eaf0e8;color:#183b32}#preview{display:none;max-width:100%;max-height:220px;margin-top:10px;border-radius:10px}.day h3{margin:0 0 8px;color:#183b32;font-size:15px}.day p{font-size:14px;margin:6px 0}li{margin:7px 0}footer{text-align:center;color:#68756e;font-size:12px;padding:18px}@media(max-width:560px){.grid,.week{grid-template-columns:1fr}}
-</style></head><body><header><small>TON ASSISTANT NUTRITION</small><h1>Mon Coach Lafay 💪</h1><div>Menus de cantine, repas maison et liste de courses.</div></header><main>
-<section class="card"><h2>Ton profil</h2><div class="grid"><div class="stat"><b>76 kg</b>Poids de référence</div><div class="stat"><b>4 séances</b>Lafay / semaine</div><div class="stat"><b>20 h</b>Entraînement</div><div class="stat"><b>3 repas</b>Par jour</div></div><p class="muted">Objectif : prise de muscle progressive sans prise de ventre. Lafay lundi, mercredi, jeudi et samedi. Une sortie cardio hebdomadaire.</p></section>
-<section class="card"><h2>1. Menu de la cafétéria</h2><p class="muted"><b>Semaine du 23 au 27 novembre 2026.</b> Menu saisi à partir de ta photo. Le choix conseillé est intégré au planning ci-dessous.</p><label>Photo du menu</label><input id="photo" type="file" accept="image/*" capture="environment"><img id="preview" alt="Aperçu du menu"><label>Menu de la semaine</label><textarea id="menu" placeholder="Menu de la cantine…"></textarea><button class="alt" id="save">Enregistrer</button><button id="make">Afficher mon planning adapté</button><p id="status" class="muted"></p></section>
-<section class="card"><h2>2. Ton programme hebdomadaire</h2><p class="muted">Planning adapté à la cantine de cette semaine. Les portions de féculents sont indiquées crues lorsqu’il s’agit de riz ou de pâtes.</p><div id="week" class="week"></div></section>
-<section class="card"><h2>3. Liste de courses</h2><div id="shopping"></div><button class="alt" id="copy">Copier la liste</button><button class="alt" onclick="window.print()">Imprimer</button></section>
-<section class="card"><h2>4. Suivi</h2><div class="grid"><div><label>Poids (kg)</label><input id="weight" type="number" step=".1" placeholder="76"></div><div><label>Tour de taille (cm)</label><input id="waist" type="number" step=".5"></div></div><label>Notes</label><textarea id="notes" placeholder="Énergie, récupération, progression…"></textarea><button class="alt" id="track">Enregistrer mon suivi</button></section>
-<footer>Planning de la semaine du 23 au 29 novembre 2026. Les données restent dans ce navigateur ; la lecture automatique des photos et la synchronisation nécessitent encore une connexion IA et un hébergement adaptés.</footer></main>
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#173f35">
+<title>Mon Coach Lafay</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f1f5ef;color:#202b26;font-family:Arial,sans-serif;line-height:1.5}
+header{background:#173f35;color:white;padding:25px 18px;text-align:center}
+header h1{margin:0;font-size:25px}
+header p{margin:5px 0 0;color:#d9e9df}
+main{max-width:850px;margin:auto;padding:15px}
+.card{background:white;border-radius:22px;padding:20px;margin:15px 0;box-shadow:0 2px 8px #0000000b}
+h2{font-size:21px;margin-top:0}
+h3{color:#173f35;margin-bottom:8px}
+input,textarea{width:100%;padding:13px;border:1px solid #ccd7ce;border-radius:12px;font-size:16px;margin:5px 0 12px}
+textarea{min-height:120px}
+button{border:0;border-radius:12px;padding:13px 18px;background:#173f35;color:white;font-size:15px;font-weight:bold;margin:5px 4px 5px 0}
+button.secondary{background:#e8efe7;color:#173f35}
+.day{background:#eef4ea;padding:16px;border-radius:18px;margin:12px 0}
+.day h3{margin-top:0}
+.day p{margin:8px 0}
+.small{color:#68766f;font-size:14px}
+ul{padding-left:22px}
+li{margin:7px 0}
+footer{text-align:center;padding:20px;color:#718078;font-size:13px}
+</style>
+</head>
+<body>
+<header>
+<h1>MON COACH LAFAY</h1>
+<p>Nutrition, progression et suivi personnel</p>
+</header>
+<main>
+
+<section class="card">
+<h2>Ton profil</h2>
+<label>Poids actuel (kg)</label>
+<input id="weight" type="number" value="76">
+<label>Taille (cm)</label>
+<input id="height" type="number" value="186">
+<label>Objectif</label>
+<input value="Prise de muscle sans prendre du ventre" readonly>
+<p class="small">Base indicative : environ 2 700 kcal les jours Lafay et 2 500 kcal les jours de repos. À ajuster selon l'évolution du poids, du tour de taille et des performances.</p>
+</section>
+
+<section class="card">
+<h2>1. Menu de la cafétéria</h2>
+<p class="small">Semaine du 23 au 27 novembre 2026</p>
+<label>Menu de la semaine</label>
+<textarea id="menu">Lundi 23 novembre : filet de truite du Jura, quinoa aux légumes.
+Mardi 24 novembre : dorade du Pacifique à la plancha, boulgour à la tomate.
+Mercredi 25 novembre : steak haché de bœuf, gratin dauphinois.
+Jeudi 26 novembre : dinde Thanksgiving, cuisson lente, cuisse rôtie et légumes confits.
+Vendredi 27 novembre : filet d’omble à la plancha, garniture du jour.</textarea>
+<button class="secondary" onclick="save()">Enregistrer</button>
+<button onclick="prepare()">Préparer ma semaine</button>
+<p id="saved" class="small"></p>
+</section>
+
+<section class="card">
+<h2>2. Ton programme hebdomadaire</h2>
+<div id="week"></div>
+</section>
+
+<section class="card">
+<h2>3. Liste de courses</h2>
+<p class="small">À cocher au fur et à mesure de tes achats.</p>
+<div id="shopping"></div>
+</section>
+
+<section class="card">
+<h2>4. Suivi de progression</h2>
+<label>Poids (kg)</label>
+<input id="trackWeight" type="number" placeholder="Ex : 76">
+<label>Tour de taille (cm)</label>
+<input id="waist" type="number" placeholder="Ex : 82">
+<label>Commentaires</label>
+<textarea id="notes" placeholder="Forme, progression, séances..."></textarea>
+<button onclick="saveTrack()">Enregistrer mon suivi</button>
+<p id="trackSaved" class="small"></p>
+</section>
+
+</main>
+<footer>Mon Coach Lafay · Programme nutritionnel personnel</footer>
+
 <script>
-const menuText = `Lundi 23 novembre : filet de truite du Jura, quartier de citron, quinoa aux légumes.
-Mardi 24 novembre : dorada del Pacífico à la plancha, salsa verde chimichurri, guacamole péruvien à la coriandre.
-Mercredi 25 novembre : civet de cerf et saucisse de porc, knöpfli et chou rouge. Alternative : steak haché de bœuf au Satour et gratin dauphinois crémeux.
-Jeudi 26 novembre : repas Thanksgiving, dinde en trois cuissons (filet en cuisson lente, cuisse rôtie et sot-l’y-laisse confits).
-Vendredi 27 novembre : filet d’ombre à la plancha, sauce aux morilles, garniture du jour. Buffet de légumes chauds et crudités disponible.`;
 const days=[
-["Lundi 23 · Lafay 20 h","Flocons d’avoine 80 g, fromage blanc 250 g, banane, 2 œufs","Filet de truite, quinoa aux légumes. Ajoute des légumes si besoin, puis un fruit et un skyr","Après Lafay : poulet 180 g, riz 100 g cru, légumes 200 g, yaourt nature"],
-["Mardi 24 · repos","Pain complet 100 g, 2 œufs, fromage blanc 200 g, pomme","Dorada à la plancha, salsa verde et guacamole. Prends une portion de féculents si disponible, légumes et fruit","Steak de rumsteck 180 g, pommes de terre 350 g, haricots verts"],
-["Mercredi 25 · Lafay 20 h","Flocons d’avoine 80 g, lait 250 ml, fromage blanc 200 g, banane","Civet de cerf et saucisse, knöpfli et chou rouge. Portion raisonnable de sauce et de knöpfli ; privilégie le chou. Si tu préfères, steak haché et gratin, sans reprendre de gratin","Après Lafay : dinde 180 g, pâtes 100 g crues, sauce tomate et légumes"],
-["Jeudi 26 · Lafay 20 h","Pain complet 100 g, 2 œufs, fromage blanc 250 g, banane","Dinde Thanksgiving : choisis surtout le filet et la cuisse, avec une portion de garniture et des légumes si disponibles","Après Lafay : saumon 160 g, riz 90 g cru, courgettes ou légumes 200 g"],
-["Vendredi 27 · repos","Flocons d’avoine 70 g, fromage blanc 250 g, pomme, noix 15 g","Filet d’ombre à la plancha, sauce aux morilles, garniture du jour. Complète avec le buffet de légumes et des crudités","Thon 140 g égoutté, pâtes 90 g crues, sauce tomate, salade"],
-["Samedi · Lafay 20 h","Flocons d’avoine 80 g, fromage blanc 250 g, banane, 2 œufs","Poulet 180 g, pommes de terre 350 g, légumes, fruit","Après Lafay : steak de rumsteck 180 g, riz 100 g cru, légumes 200 g, skyr"],
-["Dimanche · cardio ou repos","Pain complet 100 g, 3 œufs, fromage blanc 150 g, fruit","Poulet rôti 180 g, semoule 90 g crue, légumes","Lentilles 90 g crues, 2 œufs, carottes et pommes de terre"]
+["Lundi · Lafay 20 h",
+"Flocons d’avoine 80 g, fromage blanc 250 g, banane, 2 œufs.",
+"Cantine : filet de truite du Jura, quinoa aux légumes. Ajouter un fruit et un skyr.",
+"Poulet 180 g, riz 100 g cru, légumes 200 g, yaourt."],
+["Mardi · Repos",
+"Pain complet 100 g, 2 œufs, fromage blanc 200 g, pomme.",
+"Cantine : dorade à la plancha, boulgour à la tomate. Ajouter des légumes et un fruit.",
+"Chili : bœuf maigre 150 g, haricots rouges, riz 80 g cru."],
+["Mercredi · Lafay 20 h",
+"Avoine 80 g, lait 250 ml, fromage blanc 200 g, banane.",
+"Cantine : steak haché, portion raisonnable de gratin dauphinois et légumes si disponibles. Fruit et skyr.",
+"Dinde 180 g, pâtes 100 g crues, sauce tomate, légumes."],
+["Jeudi · Lafay 20 h",
+"Pain complet 100 g, 2 œufs, fromage blanc 250 g, banane.",
+"Cantine : dinde rôtie et légumes confits. Ajouter une portion de féculents et un fruit.",
+"Steak 5 % 160 g, pommes de terre 350 g, haricots verts."],
+["Vendredi · Repos",
+"Avoine 70 g, fromage blanc 250 g, pomme, noix 15 g.",
+"Cantine : filet d’omble à la plancha, garniture du jour. Ajouter des légumes si besoin et un fruit.",
+"Thon 140 g, pommes de terre 300 g, crudités, sauce au yaourt."],
+["Samedi · Lafay 20 h",
+"Avoine 80 g, fromage blanc 250 g, banane, 2 œufs.",
+"Poulet 150 g, riz 100 g cru, légumes.",
+"Saumon 160 g, pommes de terre 300 g, légumes."],
+["Dimanche · Cardio ou repos",
+"Pain complet 100 g, 3 œufs, fromage blanc 150 g, fruit.",
+"Poulet 180 g, semoule 100 g crue, légumes.",
+"Omelette 3 œufs, salade, pommes de terre 250 g."]
 ];
-const list=["Flocons d’avoine 500 g","Fromage blanc / skyr environ 1,5 kg","Œufs 12","Pain complet 1 paquet","Lait 1 litre","Bananes 4 à 5","Pommes et autres fruits 5 à 7","Poulet 400 g","Dinde 200 g","Rumsteck 360 g","Saumon 160 g","Thon 1 boîte (140 g égoutté)","Riz 500 g","Pâtes 250 à 500 g","Semoule 100 g","Pommes de terre 700 g","Lentilles 100 g","Haricots verts 200 g","Légumes variés ou surgelés 1,5 à 2 kg","Sauce tomate 1 bocal","Noix/amandes 100 g","Yaourts nature 3 à 4","Huile d’olive et épices"];
-document.getElementById("week").innerHTML=days.map(d=>`<article class="day"><h3>${d[0]}</h3><p><b>Matin :</b> ${d[1]}</p><p><b>Midi :</b> ${d[2]}</p><p><b>Soir :</b> ${d[3]}</p></article>`).join("");
-document.getElementById("shopping").innerHTML="<ul>"+list.map(x=>`<li><label style="font-weight:400"><input type="checkbox" style="width:auto"> ${x}</label></li>`).join("")+"</ul>";
-const $=id=>document.getElementById(id);if(!localStorage.getItem("lafay_menu"))$("menu").value=menuText;
-$("photo").onchange=()=>{let f=$("photo").files[0];if(f){$("preview").src=URL.createObjectURL(f);$("preview").style.display="block"}};
-function save(){["menu","weight","waist","notes"].forEach(k=>localStorage.setItem("lafay_"+k,$(k).value));$("status").textContent="Informations enregistrées sur cet appareil."}
-$("save").onclick=save;$("track").onclick=save;$("make").onclick=()=>{save();$("status").textContent="Programme de base affiché. Pour une adaptation exacte à la photo, joins-la aussi dans ta conversation ChatGPT.";$("week").scrollIntoView({behavior:"smooth"})};
-["menu","weight","waist","notes"].forEach(k=>$(k).value=localStorage.getItem("lafay_"+k)||"");
-$("copy").onclick=()=>navigator.clipboard?.writeText(list.join("\n"));
-if("serviceWorker"in navigator&&location.protocol.startsWith("http"))navigator.serviceWorker.register("./sw.js").catch(()=>{});
-</script></body></html>
+
+function renderWeek(){
+document.getElementById("week").innerHTML=days.map(d=>`
+<div class="day">
+<h3>${d[0]}</h3>
+<p><b>Matin :</b> ${d[1]}</p>
+<p><b>Midi :</b> ${d[2]}</p>
+<p><b>Soir :</b> ${d[3]}</p>
+</div>`).join("");
+}
+
+const items=[
+"Flocons d’avoine 500 g",
+"Fromage blanc ou skyr 2 kg",
+"Œufs x 12",
+"Pain complet 1 paquet",
+"Bananes x 4",
+"Pommes et autres fruits",
+"Poulet 500 g",
+"Dinde 200 g",
+"Steaks hachés maigres 200 g",
+"Saumon 160 g",
+"Thon 1 boîte",
+"Riz 500 g",
+"Pâtes 250 g",
+"Semoule 150 g",
+"Pommes de terre 1 kg",
+"Haricots rouges 1 boîte",
+"Légumes variés 1,5 kg",
+"Noix 100 g",
+"Tomates ou sauce tomate"
+];
+
+function renderShopping(){
+document.getElementById("shopping").innerHTML=items.map((item,i)=>`
+<label style="display:block;padding:7px 0">
+<input type="checkbox" style="width:auto;margin-right:8px" id="item${i}">
+${item}
+</label>`).join("");
+}
+
+function save(){
+localStorage.setItem("lafay_menu",document.getElementById("menu").value);
+localStorage.setItem("lafay_weight",document.getElementById("weight").value);
+document.getElementById("saved").textContent="Menu et profil enregistrés.";
+}
+
+function prepare(){
+save();
+document.getElementById("saved").textContent="Ton programme de la semaine est affiché plus bas.";
+document.getElementById("week").scrollIntoView({behavior:"smooth"});
+}
+
+function saveTrack(){
+const data={
+weight:document.getElementById("trackWeight").value,
+waist:document.getElementById("waist").value,
+notes:document.getElementById("notes").value
+};
+localStorage.setItem("lafay_tracking",JSON.stringify(data));
+document.getElementById("trackSaved").textContent="Suivi enregistré sur cet appareil.";
+}
+
+const oldMenu=localStorage.getItem("lafay_menu");
+if(oldMenu)document.getElementById("menu").value=oldMenu;
+const oldWeight=localStorage.getItem("lafay_weight");
+if(oldWeight)document.getElementById("weight").value=oldWeight;
+renderWeek();
+renderShopping();
+</script>
+</body>
+</html>
